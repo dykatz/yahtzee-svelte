@@ -1,17 +1,19 @@
 <script lang="ts">
     import { ready } from './stores';
-
+    
     export let score: number = 0;
     export let displayScore: number = 0;
 
-    let used: boolean = false;
-    $: disabled = used || !$ready;
+    let burned: boolean = false;
+    $: disabled = burned || !$ready;
 
     function onClick() {
         score = displayScore;
-        used = true;
+        if (displayScore === 0) {
+            burned = true;
+        }
         $ready = false;
     }
 </script>
 
-<button {disabled} on:click={onClick}>{used ? score : displayScore}</button>
+<button {disabled} on:click={onClick}>{displayScore}</button>

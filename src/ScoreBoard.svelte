@@ -1,152 +1,65 @@
 <script lang="ts">
+    import { dice, ready } from './stores';
+
     import ScoreSlot from './ScoreSlot.svelte';
+    import YahtzeeSlot from './YahtzeeSlot.svelte';
 
-    let slotOnes: ScoreSlot;
-    let slotTwos: ScoreSlot;
-    let slotThrees: ScoreSlot;
-    let slotFours: ScoreSlot;
-    let slotFives: ScoreSlot;
-    let slotSixes: ScoreSlot;
-    let slotThreeKind: ScoreSlot;
-    let slotFourKind: ScoreSlot;
-    let slotHouse: ScoreSlot;
-    let slotSmall: ScoreSlot;
-    let slotLarge: ScoreSlot;
-    let slotYahtzee: ScoreSlot;
-    let slotChance: ScoreSlot;
+    function maphas<K, V>(map: Map<K, V>, func: Function): boolean {
+        let r: boolean = false;
 
-    function onesCalcScore(e) {
-        slotOnes.setScore(e.detail.get(1) ?? 0);
-    }
-
-    function twosCalcScore(e) {
-        slotTwos.setScore(2 * (e.detail.get(2) ?? 0));
-    }
-
-    function threesCalcScore(e) {
-        slotThrees.setScore(3 * (e.detail.get(3) ?? 0));
-    }
-
-    function foursCalcScore(e) {
-        slotFours.setScore(4 * (e.detail.get(4) ?? 0));
-    }
-
-    function fivesCalcScore(e) {
-        slotFives.setScore(5 * (e.detail.get(5) ?? 0));
-    }
-
-    function sixesCalcScore(e) {
-        slotSixes.setScore(6 * (e.detail.get(6) ?? 0));
-    }
-
-    function threeKindCalcStore(e) {
-        let hasThree: boolean = false;
-
-        e.detail.forEach((value: number) => {
-            if (value >= 3) {
-                hasThree = true;
+        map.forEach((value: V, key: K) => {
+            if (func(key, value)) {
+                r = true;
             }
         });
 
-        if (!hasThree) {
-            slotThreeKind.setScore(0);
-        } else {
-            let sum: number = 0;
-            e.detail.forEach((value: number, key: number) => { sum += value * key; });
-            slotThreeKind.setScore(sum);
-        }
+        return r;
     }
 
-    function fourKindCalcStore(e) {
-        let hasFour: boolean = false;
+    $: _ones = $dice.get(1) ?? 0;
+    $: _twos = 2 * ($dice.get(2) ?? 0);
+    $: _threes = 3 * ($dice.get(3) ?? 0);
+    $: _fours = 4 * ($dice.get(4) ?? 0);
+    $: _fives = 5 * ($dice.get(5) ?? 0);
+    $: _sixes = 6 * ($dice.get(6) ?? 0);
 
-        e.detail.forEach((value: number) => {
-            if (value >= 4) {
-                hasFour = true;
-            }
-        });
+    $: sum = _ones + _twos + _threes + _fours + _fives + _sixes;
 
-        if (!hasFour) {
-            slotFourKind.setScore(0);
-        } else {
-            let sum: number = 0;
-            e.detail.forEach((value: number, key: number) => { sum += value * key; });
-            slotFourKind.setScore(sum);
-        }
-    }
+    $: hasThreeOfAKind = maphas($dice, (_: number, val: number) => val >= 3);
+    $: hasFourOfAKind = maphas($dice, (_: number, val: number) => val >= 4);
+    $: hasExactlyTwoOfAKind = maphas($dice, (_: number, val: number) => val === 2);
+    $: hasExactlyThreeOfAKind = maphas($dice, (_: number, val: number) => val === 3);
+    $: hasSmallStraight = $dice.has(3) && $dice.has(4) && (($dice.has(1) && $dice.has(2)) || ($dice.has(2) && $dice.has(5)) || ($dice.has(5) && $dice.has(6)));
+    $: hasLargeStraight = $dice.has(2) && $dice.has(3) && $dice.has(4) && $dice.has(5) && ($dice.has(1) || $dice.has(6));
+    $: hasYahtzee = maphas($dice, (_: number, val: number) => val === 5);
 
-    function fullHouseCalcStore(e) {
-        let hasTwo: boolean = false;
-        let hasThree: boolean = false;
+    $: _threeOfAKind = hasThreeOfAKind ? sum : 0;
+    $: _fourOfAKind = hasFourOfAKind ? sum : 0;
+    $: _fullHouse = (hasExactlyTwoOfAKind && hasExactlyThreeOfAKind) ? 25 : 0;
+    $: _smallStraight = hasSmallStraight ? 30 : 0;
+    $: _largeStraight = hasLargeStraight ? 40 : 0;
 
-        e.detail.forEach((value: number) => {
-            if (value === 2) {
-                hasTwo = true;
-            }
-            if (value === 3) {
-                hasThree = true;
-            }
-        });
+    let yahtzee: number = 0;
+    $: _yahtzee = hasYahtzee ? (yahtzee === 0 ? 50 : yahtzee + 100) : 0;
 
-        slotHouse.setScore((hasTwo && hasThree) ? 25 : 0);
-    }
+    let ones: number = 0;
+    let twos: number = 0;
+    let threes: number = 0;
+    let fours: number = 0;
+    let fives: number = 0;
+    let sixes: number = 0;
 
-    function smallStraightCalcStore(e) {
-        let hasSmallStraight: boolean = false;
-        let dice: Map<number, number> = e.detail;
-
-        if (dice.has(3) && dice.has(4)) {
-            if (dice.has(1) && dice.has(2)) {
-                hasSmallStraight = true;
-            }
-            if (dice.has(5) && dice.has(6)) {
-                hasSmallStraight = true;
-            }
-            if (dice.has(2) && dice.has(5)) {
-                hasSmallStraight = true;
-            }
-        }
-
-        slotSmall.setScore(hasSmallStraight ? 30 : 0);
-    }
-
-    function largeStraightCalcStore(e) {
-        let hasLargeStraight: boolean = false;
-        let dice: Map<number, number> = e.detail;
-
-        if (dice.has(2) && dice.has(3) && dice.has(4) && dice.has(5)) {
-            if (dice.has(1)) {
-                hasLargeStraight = true;
-            }
-            if (dice.has(6)) {
-                hasLargeStraight = true;
-            }
-        }
-
-        slotLarge.setScore(hasLargeStraight ? 40 : 0);
-    }
-
-    function yahtzeeCalcStore(e) {
-        let hasFive: boolean = false;
-
-        e.detail.forEach((value: number) => {
-            if (value === 5) {
-                hasFive = true;
-            }
-        });
-
-        slotYahtzee.setScore(hasFive ? 50 : 0);
-    }
-
-    function chanceCalcStore(e) {
-        let sum: number = 0;
-        e.detail.forEach((value: number, key: number) => { sum += value * key; });
-        slotChance.setScore(sum);
-    }
-
-    let upperLevelSum: number = 0;
-    
+    $: upperLevelSum = ones + twos + threes + fours + fives + sixes;
     $: upperLevelBonus = upperLevelSum > 62 ? 35 : 0;
+
+    let threeOfAKind: number = 0;
+    let fourOfAKind: number = 0;
+    let fullHouse: number = 0;
+    let smallStraight: number = 0;
+    let largeStraight: number = 0;
+    let chance: number = 0;
+
+    $: grandTotal = ones + twos + threes + fours + fives + sixes + upperLevelBonus + threeOfAKind + fourOfAKind + fullHouse + smallStraight + largeStraight + yahtzee + chance;
 </script>
 
 <table>
@@ -161,13 +74,14 @@
         <td>Upper Level Bonus</td>
     </tr>
     <tr>
-        <td><ScoreSlot bind:this={slotOnes} on:calcScore={onesCalcScore}/></td>
-        <td><ScoreSlot bind:this={slotTwos} on:calcScore={twosCalcScore}/></td>
-        <td><ScoreSlot bind:this={slotThrees} on:calcScore={threesCalcScore}/></td>
-        <td><ScoreSlot bind:this={slotFours} on:calcScore={foursCalcScore}/></td>
-        <td><ScoreSlot bind:this={slotFives} on:calcScore={fivesCalcScore}/></td>
-        <td><ScoreSlot bind:this={slotSixes} on:calcScore={sixesCalcScore}/></td>
+        <td><ScoreSlot displayScore={_ones} score={ones}/></td>
+        <td><ScoreSlot displayScore={_twos} score={twos}/></td>
+        <td><ScoreSlot displayScore={_threes} score={threes}/></td>
+        <td><ScoreSlot displayScore={_fours} score={fours}/></td>
+        <td><ScoreSlot displayScore={_fives} score={fives}/></td>
+        <td><ScoreSlot displayScore={_sixes} score={sixes}/></td>
         <td>{upperLevelBonus}</td>
+        <td>Grand Total</td>
     </tr>
     <tr>
         <td rowspan=2>Lower Level</td>
@@ -178,14 +92,15 @@
         <td>Large Straight</td>
         <td>Yahtzee</td>
         <td>Chance</td>
+        <td>{grandTotal}</td>
     </tr>
     <tr>
-        <td><ScoreSlot bind:this={slotThreeKind} on:calcScore={threeKindCalcStore}/></td>
-        <td><ScoreSlot bind:this={slotFourKind} on:calcScore={fourKindCalcStore}/></td>
-        <td><ScoreSlot bind:this={slotHouse} on:calcScore={fullHouseCalcStore}/></td>
-        <td><ScoreSlot bind:this={slotSmall} on:calcScore={smallStraightCalcStore}/></td>
-        <td><ScoreSlot bind:this={slotLarge} on:calcScore={largeStraightCalcStore}/></td>
-        <td><ScoreSlot bind:this={slotYahtzee} on:calcScore={yahtzeeCalcStore}/></td>
-        <td><ScoreSlot bind:this={slotChance} on:calcScore={chanceCalcStore}/></td>
+        <td><ScoreSlot displayScore={_threeOfAKind} score={threeOfAKind}/></td>
+        <td><ScoreSlot displayScore={_fourOfAKind} score={fourOfAKind}/></td>
+        <td><ScoreSlot displayScore={_fullHouse} score={fullHouse}/></td>
+        <td><ScoreSlot displayScore={_smallStraight} score={smallStraight}/></td>
+        <td><ScoreSlot displayScore={_largeStraight} score={largeStraight}/></td>
+        <td><YahtzeeSlot displayScore={_yahtzee} score={yahtzee}/></td>
+        <td><ScoreSlot displayScore={sum} score={chance}/></td>
     </tr>
 </table>

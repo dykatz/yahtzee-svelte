@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Dispatcher } from './dispatcher';
+    import { dice, ready } from './stores';
 
     import Dice from './Dice.svelte';
 
@@ -43,16 +43,18 @@
             l5 = true;
         }
 
-        Dispatcher.emit('produceRoll', [d1, d2, d3, d4, d5].reduce((prev: Map<number, number>, item: number) => {
+        $dice = [d1, d2, d3, d4, d5].reduce((prev: Map<number, number>, item: number) => {
             prev.set(item, 1 + (prev.get(item) ?? 0));
             return prev;
-        }, new Map()));
+        }, new Map());
+
+        $ready = true;
     }
 
-    Dispatcher.enlist('consumeRoll', () => {
+    $: if (!$ready) {
         rerolls = 3;
         disabled = false;
-    });
+    }
 </script>
 
 <table>
