@@ -74,12 +74,12 @@
         <td>Upper Level Bonus</td>
     </tr>
     <tr>
-        <td><ScoreSlot displayScore={_ones} score={ones}/></td>
-        <td><ScoreSlot displayScore={_twos} score={twos}/></td>
-        <td><ScoreSlot displayScore={_threes} score={threes}/></td>
-        <td><ScoreSlot displayScore={_fours} score={fours}/></td>
-        <td><ScoreSlot displayScore={_fives} score={fives}/></td>
-        <td><ScoreSlot displayScore={_sixes} score={sixes}/></td>
+        <td><ScoreSlot displayScore={_ones} score={ones} on:assignment="{() => {ones = _ones}}"/></td>
+        <td><ScoreSlot displayScore={_twos} score={twos} on:assignment="{() => {twos = _twos}}"/></td>
+        <td><ScoreSlot displayScore={_threes} score={threes} on:assignment="{() => {threes = _threes}}"/></td>
+        <td><ScoreSlot displayScore={_fours} score={fours} on:assignment="{() => {fours = _fours}}"/></td>
+        <td><ScoreSlot displayScore={_fives} score={fives} on:assignment="{() => {fives = _fives}}"/></td>
+        <td><ScoreSlot displayScore={_sixes} score={sixes} on:assignment="{() => {sixes = _sixes}}"/></td>
         <td>{upperLevelBonus}</td>
         <td>Grand Total</td>
     </tr>
@@ -95,12 +95,12 @@
         <td>{grandTotal}</td>
     </tr>
     <tr>
-        <td><ScoreSlot displayScore={_threeOfAKind} score={threeOfAKind}/></td>
-        <td><ScoreSlot displayScore={_fourOfAKind} score={fourOfAKind}/></td>
-        <td><ScoreSlot displayScore={_fullHouse} score={fullHouse}/></td>
-        <td><ScoreSlot displayScore={_smallStraight} score={smallStraight}/></td>
-        <td><ScoreSlot displayScore={_largeStraight} score={largeStraight}/></td>
-        <td><YahtzeeSlot displayScore={_yahtzee} score={yahtzee}/></td>
-        <td><ScoreSlot displayScore={sum} score={chance}/></td>
+        <td><ScoreSlot displayScore={_threeOfAKind} score={threeOfAKind} on:assignment="{() => {threeOfAKind = _threeOfAKind}}"/></td>
+        <td><ScoreSlot displayScore={_fourOfAKind} score={fourOfAKind} on:assignment="{() => {fourOfAKind = _fourOfAKind}}"/></td>
+        <td><ScoreSlot displayScore={_fullHouse} score={fullHouse} on:assignment="{() => {fullHouse = _fullHouse}}"/></td>
+        <td><ScoreSlot displayScore={_smallStraight} score={smallStraight} on:assignment="{() => {smallStraight = _smallStraight}}"/></td>
+        <td><ScoreSlot displayScore={_largeStraight} score={largeStraight} on:assignment="{() => {largeStraight = _largeStraight}}"/></td>
+        <td><YahtzeeSlot displayScore={_yahtzee} score={yahtzee} on:assignment="{() => {yahtzee = _yahtzee}}"/></td>
+        <td><ScoreSlot displayScore={sum} score={chance} on:assignment="{() => {chance = sum}}"/></td>
     </tr>
 </table>
