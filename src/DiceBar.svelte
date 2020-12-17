@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { dice, ready } from './stores';
+    import { dice, ready, usedSlots } from './stores';
 
     import Dice from './Dice.svelte';
 
@@ -54,6 +54,17 @@
     $: if (!$ready) {
         rerolls = 3;
         disabled = false;
+    }
+
+    $: if ($usedSlots === 13) {
+        disabled = true;
+        rerolls = 0;
+    }
+
+    $: if ($usedSlots === 0) {
+        $ready = true;
+        disabled = false;
+        rerolls = 3;
     }
 </script>
 

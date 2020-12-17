@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { ready } from './stores';
+    import { ready, usedSlots } from './stores';
     
     let dispatch = createEventDispatcher();
 
@@ -11,12 +11,21 @@
     $: disabled = burned || !$ready;
 
     function onClick() {
+        if (score === 0) {
+            $usedSlots += 1;
+        }
         score = displayScore;
         if (displayScore === 0) {
             burned = true;
         }
         $ready = false;
         dispatch('assignment');
+    }
+
+    $: if ($usedSlots === 0) {
+        score = 0;
+        displayScore = 0;
+        burned = false;
     }
 </script>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { ready } from './stores';
+    import { ready, usedSlots } from './stores';
 
     let dispatch = createEventDispatcher();
 
@@ -14,7 +14,14 @@
         score = displayScore;
         used = true;
         $ready = false;
+        $usedSlots += 1;
         dispatch('assignment');
+    }
+
+    $: if ($usedSlots === 0) {
+        score = 0;
+        displayScore = 0;
+        used = false;
     }
 </script>
 
