@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { dice, usedSlots } from './stores';
+    import { dice, totalScore, usedSlots } from './stores';
 
     import ScoreSlot from './ScoreSlot.svelte';
     import YahtzeeSlot from './YahtzeeSlot.svelte';
@@ -60,6 +60,10 @@
     let chance: number = 0;
 
     $: grandTotal = ones + twos + threes + fours + fives + sixes + upperLevelBonus + threeOfAKind + fourOfAKind + fullHouse + smallStraight + largeStraight + yahtzee + chance;
+
+    $: if ($usedSlots === 13) {
+        $totalScore = grandTotal;
+    }
 
     $: if ($usedSlots === 0) {
         ones = 0;

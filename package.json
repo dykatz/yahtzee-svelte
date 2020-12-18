@@ -24,6 +24,7 @@
     "typescript": "^3.9.3"
   },
   "dependencies": {
+    "idb": "^5.0.8",
     "sirv-cli": "^1.0.0"
   }
 }
