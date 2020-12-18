@@ -62,7 +62,6 @@
     }
 
     $: if ($usedSlots === 0) {
-        $ready = true;
         disabled = false;
         rerolls = 3;
     }
