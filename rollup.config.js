@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import smelte from 'smelte/rollup-plugin-smelte';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -44,6 +45,26 @@ export default {
 			compilerOptions: {
 				// enable run-time checks when not in production
 				dev: !production
+			}
+		}),
+		
+		smelte({
+			purge: production,
+			output: "public/global.css",
+			postcss: [],
+			whitelist: [],
+			whitelistPatterns: [],
+			tailwind: {
+				colors: {
+					primary: "#b027b0",
+					secondary: "#009688",
+					error: "#f44336",
+					success: "#4caf50",
+					alert: "#ff9800",
+					blue: "#2196f3",
+					dark: "#212121" 
+				},
+				darkMode: true,
 			}
 		}),
 		// we'll extract any component CSS out into

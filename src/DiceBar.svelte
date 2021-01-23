@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Button } from 'smelte';
+
     import { dice, ready, usedSlots } from './stores';
 
     import Dice from './Dice.svelte';
@@ -67,24 +69,17 @@
     }
 </script>
 
-<table>
-    <tr>
-        <td><Dice num={d1}/></td>
-        <td><Dice num={d2}/></td>
-        <td><Dice num={d3}/></td>
-        <td><Dice num={d4}/></td>
-        <td><Dice num={d5}/></td>
-
-        <td rowspan=2>
-            <button on:click={rollDice} disabled={disabled}>Roll!</button>
-            {rerolls} rolls remaining!
-        </td>
-    </tr>
-    <tr>
-        <td><button disabled={l1} on:click="{() => { l1 = true; }}">Lock</button></td>
-        <td><button disabled={l2} on:click="{() => { l2 = true; }}">Lock</button></td>
-        <td><button disabled={l3} on:click="{() => { l3 = true; }}">Lock</button></td>
-        <td><button disabled={l4} on:click="{() => { l4 = true; }}">Lock</button></td>
-        <td><button disabled={l5} on:click="{() => { l5 = true; }}">Lock</button></td>
-    </tr>
-</table>
+<div class="grid grid-cols-6 pad-4">
+	<div><Dice num={d1}/></div>
+	<div><Dice num={d2}/></div>
+	<div><Dice num={d3}/></div>
+	<div><Dice num={d4}/></div>
+	<div><Dice num={d5}/></div>
+	<div><Button on:click={rollDice} disabled={disabled}>{rerolls} rolls remaining!</Button></div>
+	
+	<div><Button disabled={l1} on:click="{() => { l1 = true; }}">Lock</Button></div>
+	<div><Button disabled={l2} on:click="{() => { l2 = true; }}">Lock</Button></div>
+	<div><Button disabled={l3} on:click="{() => { l3 = true; }}">Lock</Button></div>
+	<div><Button disabled={l4} on:click="{() => { l4 = true; }}">Lock</Button></div>
+	<div><Button disabled={l5} on:click="{() => { l5 = true; }}">Lock</Button></div>
+</div>

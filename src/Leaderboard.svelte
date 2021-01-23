@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Button, DataTable, TextField } from 'smelte';
+
     import { totalScore, usedSlots } from './stores';
     import { yahtzeeDB } from './db';
 
@@ -27,25 +29,12 @@
     }
 </script>
 
-<input type="text" autocomplete="off" disabled={disabled} bind:value={nickName}>
-<button on:click="{onSave}" disabled={disabled}>Submit</button>
+<TextField {disabled} bind:value={nickName} label="Nick Name"/>
+<Button on:click="{onSave}" disabled={disabled}>Submit</Button>
 <br>
 
 {#if leaderboard.length === 0}
 No scores in leaderboard yet!
 {:else}
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Date</th>
-        <th>Score</th>
-    </tr>
-    {#each leaderboard as leader (leader.date)}
-    <tr>
-        <td>{leader.name}</td>
-        <td>{leader.date.toDateString()}</td>
-        <td>{leader.score}</td>
-    </tr>
-    {/each}
-</table>
+<DataTable data={leaderboard.map(l => { return { ...l, date: l.date.toDateString() }; })}/>
 {/if}

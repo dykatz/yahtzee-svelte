@@ -1,5 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
+    import { Button } from 'smelte';
+
     import { ready, usedSlots } from './stores';
 
     let dispatch = createEventDispatcher();
@@ -25,4 +27,4 @@
     }
 </script>
 
-<button {disabled} on:click={onClick}>{used ? score : displayScore}</button>
+<Button {disabled} on:click={onClick}>{used ? score : displayScore}</Button>

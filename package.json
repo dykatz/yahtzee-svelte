@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "idb": "^5.0.8",
-    "sirv-cli": "^1.0.0"
+    "sirv-cli": "^1.0.0",
+    "smelte": "^1.0.18"
   }
 }
